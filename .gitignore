@@ -1,0 +1,17 @@
+node_modules/
+*.pyc
+__pycache__/
+temp_*.js
+*.json
+!public/**/*.json
+EscorteR.pdf
+*.txt
+NOT
+*.py
+session_15_05_2026.html
+export_actors.js
+run_combat.js
+summarize.js
+gen_pdf.py
+ldb_output.txt
+combat_data.txt

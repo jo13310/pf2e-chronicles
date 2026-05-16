@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Go Block | Les Chroniques de Castries ⚔</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .char-header { display: flex; gap: 30px; align-items: flex-start; margin-bottom: 30px; padding-bottom: 25px; border-bottom: 2px solid var(--gold); }
+        .char-portrait { width: 180px; height: 180px; flex-shrink: 0; padding: 6px; background: linear-gradient(135deg, var(--gold-bright), var(--gold-dark), var(--gold-bright)); box-shadow: 0 5px 20px rgba(0,0,0,0.3); position: relative; }
+        .char-portrait::before { content: ''; position: absolute; inset: 4px; border: 1px solid var(--parchment-dark); pointer-events: none; z-index: 1; }
+        .char-portrait img { width: 100%; height: 100%; object-fit: cover; display: block; border: 1px solid var(--ink-light); }
+        .char-identity { flex: 1; }
+        .char-name { font-family: 'Cinzel Decorative', serif; font-size: 2.8em; font-weight: 900; color: var(--crimson); letter-spacing: 3px; text-shadow: 1px 1px 0 var(--gold); line-height: 1.1; }
+        .char-player { font-family: 'Cinzel', serif; font-size: 0.9em; color: var(--gold-dark); letter-spacing: 3px; margin-top: 4px; }
+        .char-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .badge { font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 2px; text-transform: uppercase; padding: 3px 10px; border: 1px solid; font-weight: 700; }
+        .badge.ancestry { color: var(--leather-light); border-color: var(--leather-light); background: rgba(28,18,8,0.06); }
+        .badge.class { color: var(--crimson-light); border-color: var(--crimson-light); background: rgba(94,11,11,0.06); }
+        .badge.bg { color: var(--gold-dark); border-color: var(--gold-dark); background: rgba(196,169,110,0.1); }
+        .badge.deity { color: #4a3580; border-color: #4a3580; background: rgba(74,53,128,0.06); }
+        .badge.level { color: var(--parchment); border-color: var(--crimson); background: var(--crimson); }
+        .stats-row { display: flex; gap: 30px; margin: 25px 0; align-items: flex-start; }
+        .radar-container { flex-shrink: 0; text-align: center; }
+        .radar-title { font-family: 'Cinzel', serif; font-size: 0.7em; letter-spacing: 3px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 8px; }
+        .radar-svg { width: 280px; height: 280px; }
+        .stat-block { flex: 1; }
+        .stat-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .stat-label { font-family: 'Cinzel', serif; font-size: 0.8em; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); width: 100px; }
+        .stat-value { font-family: 'Cinzel', serif; font-weight: 700; color: var(--crimson-light); font-size: 1.1em; }
+        .stat-bar-track { flex: 1; height: 8px; background: rgba(0,0,0,0.08); border: 1px solid var(--gold); position: relative; }
+        .stat-bar-fill { height: 100%; background: linear-gradient(90deg, var(--crimson-light), var(--gold-bright)); }
+        .stat-bar-text { position: absolute; right: 5px; top: -1px; font-family: 'Cinzel', serif; font-size: 0.55em; color: var(--ink-light); line-height: 8px; }
+        .ability-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 20px 0; }
+        .ability-cell { text-align: center; padding: 10px 5px; border: 1px solid var(--gold); background: rgba(196,169,110,0.06); }
+        .ability-name { font-family: 'Cinzel', serif; font-size: 0.6em; letter-spacing: 2px; text-transform: uppercase; color: var(--gold-dark); }
+        .ability-mod { font-family: 'Cinzel Decorative', serif; font-size: 1.5em; color: var(--crimson); font-weight: 700; }
+        .skills-section { margin: 20px 0; }
+        .section-heading { font-family: 'Cinzel Decorative', serif; color: var(--crimson); font-size: 1.2em; letter-spacing: 2px; border-bottom: 1px solid var(--gold); padding-bottom: 5px; margin-bottom: 15px; }
+        .skill-list { display: flex; flex-wrap: wrap; gap: 8px; }
+        .skill-tag { font-family: 'Cinzel', serif; font-size: 0.7em; padding: 3px 10px; border: 1px solid var(--gold); letter-spacing: 1px; }
+        .skill-tag.expert { border-color: var(--crimson-light); color: var(--crimson-light); background: rgba(94,11,11,0.06); }
+        .skill-tag.trained { border-color: var(--gold-dark); color: var(--gold-dark); }
+        .lore-section { margin: 25px 0; line-height: 1.7; font-size: 1.05em; text-align: justify; }
+        .lore-section p { margin-bottom: 12px; text-indent: 1.5em; }
+        .lore-section p:first-of-type { text-indent: 0; }
+        .lore-subtitle { font-family: 'Cinzel', serif; font-size: 0.85em; color: var(--crimson-light); letter-spacing: 2px; margin-top: 15px; margin-bottom: 5px; }
+        .feat-list { margin: 15px 0; }
+        .feat-item { padding: 10px 15px; margin-bottom: 8px; border-left: 3px solid var(--gold); background: rgba(196,169,110,0.06); }
+        .feat-name { font-family: 'Cinzel', serif; font-size: 0.9em; color: var(--crimson-light); letter-spacing: 1px; }
+        .feat-desc { font-size: 0.88em; color: var(--ink-light); margin-top: 3px; }
+        @media (max-width: 700px) {
+            .char-header { flex-direction: column; align-items: center; text-align: center; }
+            .char-badges { justify-content: center; }
+            .stats-row { flex-direction: column; align-items: center; }
+            .ability-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
+        <a href="../index.html" class="back-link">
+            <svg viewBox="0 0 100 100"><polygon points="70,10 30,50 70,90"/></svg>
+            Retour aux chapitres
+        </a>
+
+        <div class="char-header">
+            <div class="char-portrait"><img src="../Assets/GoBlock.webp" alt="Go Block"></div>
+            <div class="char-identity">
+                <div class="char-name">Go Block</div>
+                <div class="char-player">Joué par Elsa</div>
+                <div class="char-badges">
+                    <span class="badge ancestry">Gobelin</span>
+                    <span class="badge ancestry">Gobelin des neiges</span>
+                    <span class="badge class">Champion</span>
+                    <span class="badge bg">Médecin militaire</span>
+                    <span class="badge deity">Sarenrae</span>
+                    <span class="badge level">Niveau 1</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-row">
+            <div class="radar-container">
+                <div class="radar-title">Profil de Capacités</div>
+                <svg class="radar-svg" viewBox="0 0 300 300">
+                    <polygon points="150,40 245.3,95 245.3,205 150,260 54.7,205 54.7,95" fill="none" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <polygon points="150,67.5 221.4,108.8 221.4,191.3 150,232.5 78.6,191.3 78.6,108.8" fill="none" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <polygon points="150,95 197.6,122.5 197.6,177.5 150,205 102.4,177.5 102.4,122.5" fill="none" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <polygon points="150,122.5 173.8,136.3 173.8,163.8 150,177.5 126.2,163.8 126.2,136.3" fill="none" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="150" y1="150" x2="150" y2="40" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="150" y1="150" x2="245.3" y2="95" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="150" y1="150" x2="245.3" y2="205" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="150" y1="150" x2="150" y2="260" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="150" y1="150" x2="54.7" y2="205" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <line x1="150" y1="150" x2="54.7" y2="95" stroke="#c4a96e" stroke-width="0.5" opacity="0.3"/>
+                    <!-- Data: STR +1, DEX +1, CON +1, INT +1, WIS +0, CHA +1 -->
+                    <polygon points="150,122.5 173.8,136.3 173.8,163.8 150,177.5 150,150 126.2,136.3"
+                        fill="rgba(139,26,26,0.12)" stroke="#8b1a1a" stroke-width="2"/>
+                    <circle cx="150" cy="122.5" r="4" fill="#8b1a1a"/>
+                    <circle cx="173.8" cy="136.3" r="4" fill="#8b1a1a"/>
+                    <circle cx="173.8" cy="163.8" r="4" fill="#8b1a1a"/>
+                    <circle cx="150" cy="177.5" r="4" fill="#8b1a1a"/>
+                    <circle cx="150" cy="150" r="4" fill="#8b1a1a"/>
+                    <circle cx="126.2" cy="136.3" r="4" fill="#8b1a1a"/>
+                    <text x="150" y="30" text-anchor="middle" font-family="Cinzel" font-size="11" fill="#9a7d3e" font-weight="700">FOR +1</text>
+                    <text x="258" y="92" text-anchor="start" font-family="Cinzel" font-size="11" fill="#9a7d3e" font-weight="700">DEX +1</text>
+                    <text x="258" y="212" text-anchor="start" font-family="Cinzel" font-size="11" fill="#9a7d3e" font-weight="700">CON +1</text>
+                    <text x="150" y="278" text-anchor="middle" font-family="Cinzel" font-size="11" fill="#9a7d3e" font-weight="700">INT +1</text>
+                    <text x="42" y="212" text-anchor="end" font-family="Cinzel" font-size="11" fill="#9a7d3e" font-weight="700">SAG +0</text>
+                    <text x="42" y="92" text-anchor="end" font-family="Cinzel" font-size="11" fill="#9a7d3e" font-weight="700">CHA +1</text>
+                </svg>
+            </div>
+            <div class="stat-block">
+                <div class="stat-row"><span class="stat-label">Points de Vie</span><span class="stat-value">17</span><div class="stat-bar-track"><div class="stat-bar-fill" style="width:100%"></div></div></div>
+                <div class="stat-row"><span class="stat-label">Experience</span><span class="stat-value">250</span><div class="stat-bar-track"><div class="stat-bar-fill" style="width:25%"></div><span class="stat-bar-text">/ 1000</span></div></div>
+                <div class="stat-row"><span class="stat-label">Points Héro</span><span class="stat-value" style="letter-spacing:4px">● ○ ○</span></div>
+                <div class="stat-row"><span class="stat-label">Vitesse</span><span class="stat-value">7,5 m (5 cases)</span></div>
+                <div class="stat-row"><span class="stat-label">Clé</span><span class="stat-value">Force</span></div>
+                <div class="stat-row"><span class="stat-label">Taille</span><span class="stat-value">Petite</span></div>
+            </div>
+        </div>
+
+        <div class="ability-grid">
+            <div class="ability-cell"><div class="ability-name">FOR</div><div class="ability-mod">+1</div></div>
+            <div class="ability-cell"><div class="ability-name">DEX</div><div class="ability-mod">+1</div></div>
+            <div class="ability-cell"><div class="ability-name">CON</div><div class="ability-mod">+1</div></div>
+            <div class="ability-cell"><div class="ability-name">INT</div><div class="ability-mod">+1</div></div>
+            <div class="ability-cell"><div class="ability-name">SAG</div><div class="ability-mod">+0</div></div>
+            <div class="ability-cell"><div class="ability-name">CHA</div><div class="ability-mod">+1</div></div>
+        </div>
+
+        <div class="divider"><span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span></div>
+
+        <div class="skills-section">
+            <div class="section-heading">Compétences</div>
+            <div class="skill-list">
+                <span class="skill-tag expert">Médecine</span>
+                <span class="skill-tag trained">Religion</span>
+                <span class="skill-tag trained">Diplomatie</span>
+                <span class="skill-tag trained">Athlétisme</span>
+                <span class="skill-tag trained">Perception</span>
+                <span class="skill-tag trained">Volonté (Expert)</span>
+                <span class="skill-tag trained">Volonté (Maître)</span>
+            </div>
+        </div>
+
+        <div class="divider"><span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span></div>
+
+        <div class="lore-section">
+            <div class="section-heading">Histoire & Personnalité</div>
+
+            <div class="lore-subtitle">Apparence</div>
+            <p>Go Block est un gobelin des neiges à la peau d'un bleu pâle caractéristique, traversée par les veines plus sombres qui trahissent son origine des Hautes Glaces. Petit même pour un gobelin, il compense par une armure de plates étincelante, polie avec un soin presque obsessionnel. Son symbole de Sarenrae — un soleil rayonnant — est soudé sur le plastron, légèrement de travers, preuve qu'il l'a lui-même réparé après un combat.</p>
+
+            <div class="lore-subtitle">Origines</div>
+            <p>Né dans les contrées gelées des Hautes Glaces, Go Block était destiné à une vie courte et brutale parmi sa tribu. Mais un jour, une caravane de prêtres de Sarenrae traversa les terres gelées, et le jeune gobelin vit pour la première fois la chaleur d'un feu qui ne consumait pas mais qui réconfortait. Fasciné, il quitta sa tribu pour suivre ces étrangers lumineux qui soignaient au lieu de tuer.</p>
+            <p>Son passé de gobelin des neiges lui confère une résistance naturelle au froid et des poumons robustes — ce qui s'avéra utile lorsqu'il s'engagea comme médecin militaire. Go Block apprit à soigner les blessures sur le champ de bataille, découvrant que ses petites mains agiles étaient parfaites pour suturer et préparer des remèdes.</p>
+
+            <div class="lore-subtitle">Le Champion</div>
+            <p>Le moment décisif de sa vie survint lorsqu'il défendit un village isolé contre des bandits, seul, avec pour seule arme sa foi et un bâton de marche. Ce jour-là, Go Block comprit que Sarenrae ne l'avait pas choisi pour qu'il reste dans l'ombre des tentes médicales. Il devint un Champion de la Fleur de l'Aube, un protecteur de ceux qui ne peuvent se protéger eux-mêmes.</p>
+
+            <div class="lore-subtitle">Personnalité</div>
+            <p>Go Block est d'un sérieux presque comique pour un gobelin. Il parle lentement, pèse chaque mot, et ne comprend généralement pas l'ironie. Sa dévotion à Sarenrae est absolue et sans compromis — il prie à chaque aube, nettoie son armure chaque soir, et refuse de laisser un blessé sans soins, même un ennemi. C'est sans doute le gobelin le plus gentil de tout Golarion, et il en est secrètement fier.</p>
+        </div>
+
+        <div class="divider"><span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span></div>
+
+        <div class="section-heading">Capacités & Aptitudes</div>
+        <div class="feat-list">
+            <div class="feat-item">
+                <div class="feat-name">Réaction de champion — Frappe vindicative</div>
+                <div class="feat-desc">Lorsqu'un allié est touché par une attaque, Go Block peut porter une Frappe au agresseur avec un bonus de circonstances.</div>
+            </div>
+            <div class="feat-item">
+                <div class="feat-name">Lumière curative (Heal)</div>
+                <div class="feat-desc">Canalise l'énergie divine pour soigner les blessures. Fontaine de soins disponible grâce à Sarenrae.</div>
+            </div>
+            <div class="feat-item">
+                <div class="feat-name">Médecin militaire (Field Medic)</div>
+                <div class="feat-desc">Formation en médecine de terrain — qualifié en Médecine et peut utiliser des traitements même sous la pression du combat.</div>
+            </div>
+            <div class="feat-item">
+                <div class="feat-name">Gobelin des neiges (Snow Goblin)</div>
+                <div class="feat-desc">Résistance au froid héréditaire. Peau bleu pâle et capacité à survivre dans les environnements glaciaires.</div>
+            </div>
+            <div class="feat-item">
+                <div class="feat-name">Arme de prédilection</div>
+                <div class="feat-desc">Formé au maniement de la guisarme et autres armes d'hast, combinant portée et puissance.</div>
+            </div>
+        </div>
+
+        <div class="divider large"><span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 68,57 79,90 50,70 21,90 32,57 5,35 39,35"/></svg></span></div>
+
+        <div class="footer">
+            <div class="footer-text">Les Chroniques de Castries ⚔ — Pathfinder 2E</div>
+        </div>
+    </div>
+</body>
+</html>

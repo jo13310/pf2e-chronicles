@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Session I — L'Escorte | Les Chroniques de Castries ⚔</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --parchment: #f4e8c1;
+            --parchment-dark: #e0d0a8;
+            --ink: #2b1810;
+            --ink-light: #4a3525;
+            --crimson: #5e0b0b;
+            --crimson-light: #8b1a1a;
+            --gold: #c4a96e;
+            --gold-bright: #d4af37;
+            --gold-dark: #9a7d3e;
+            --leather: #1c1208;
+            --leather-light: #3a2a18;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: #1a1a1a;
+            background-image: url('https://www.transparenttextures.com/patterns/black-linen.png');
+            color: var(--ink);
+            font-family: 'Crimson Text', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--parchment);
+            background-image:
+                radial-gradient(ellipse at 20% 50%, rgba(196,169,110,0.08) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(196,169,110,0.06) 0%, transparent 50%);
+            padding: 50px 60px;
+            box-shadow: 0 0 60px rgba(0,0,0,0.7);
+            position: relative;
+        }
+
+        /* Gold borders */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 10px; right: 10px; bottom: 10px; left: 10px;
+            border: 2px solid var(--gold);
+            pointer-events: none;
+            z-index: 10;
+        }
+        .container::after {
+            content: '';
+            position: absolute;
+            top: 16px; right: 16px; bottom: 16px; left: 16px;
+            border: 1px solid var(--gold-dark);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        /* Corner accents */
+        .corner { position: absolute; width: 24px; height: 24px; z-index: 11; pointer-events: none; }
+        .corner::before, .corner::after { content: ''; position: absolute; background: var(--gold-bright); }
+        .corner.tl { top: 6px; left: 6px; }
+        .corner.tr { top: 6px; right: 6px; }
+        .corner.bl { bottom: 6px; left: 6px; }
+        .corner.br { bottom: 6px; right: 6px; }
+        .corner.tl::before, .corner.bl::before { width: 18px; height: 2px; left: 0; }
+        .corner.tl::after, .corner.bl::after { width: 2px; height: 18px; left: 0; }
+        .corner.tr::before, .corner.br::before { width: 18px; height: 2px; right: 0; }
+        .corner.tr::after, .corner.br::after { width: 2px; height: 18px; right: 0; }
+        .corner.tl::before { top: 0; } .corner.tl::after { top: 0; }
+        .corner.tr::before { top: 0; } .corner.tr::after { top: 0; }
+        .corner.bl::before { bottom: 0; } .corner.bl::after { bottom: 0; }
+        .corner.br::before { bottom: 0; } .corner.br::after { bottom: 0; }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.8em;
+            color: var(--gold-dark);
+            text-decoration: none;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+            transition: color 0.2s;
+        }
+        .back-link:hover { color: var(--crimson-light); }
+        .back-link svg { width: 14px; height: 14px; fill: currentColor; }
+
+        /* ===== HEADER ===== */
+        .header { text-align: center; margin-bottom: 24px; padding-bottom: 18px; position: relative; }
+        .header::before {
+            content: ''; position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+            width: 80%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold-bright), var(--crimson-light), var(--gold-bright), transparent);
+        }
+        .header::after {
+            content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+            width: 90%; height: 2px;
+            background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold) 80%, transparent);
+        }
+        .header-subtitle { font-family: 'Cinzel', serif; font-size: 0.7em; letter-spacing: 8px; text-transform: uppercase; color: var(--gold-dark); margin-bottom: 3px; }
+        h1 { font-family: 'Cinzel Decorative', serif; font-size: 2.5em; font-weight: 900; color: var(--crimson); text-transform: uppercase; letter-spacing: 4px; text-shadow: 1px 1px 0 var(--gold); line-height: 1.1; }
+        .session-subtitle { font-family: 'Cinzel', serif; font-size: 1em; color: var(--ink-light); margin-top: 5px; letter-spacing: 2px; }
+        .session-num { color: var(--crimson-light); font-weight: 700; }
+
+        /* ===== SESSION INFO ===== */
+        .session-info { display: flex; justify-content: center; gap: 22px; padding: 8px 14px; margin-bottom: 20px; background: linear-gradient(90deg, transparent, rgba(196,169,110,0.15), transparent); border-top: 1px solid var(--gold); border-bottom: 1px solid var(--gold); font-family: 'Cinzel', serif; font-size: 0.72em; color: var(--ink-light); }
+        .session-info span { display: flex; align-items: center; gap: 5px; }
+        .session-info .label { color: var(--gold-dark); font-weight: 700; text-transform: uppercase; }
+        .session-info .value { color: var(--crimson-light); font-weight: 700; }
+
+        /* ===== DIVIDER ===== */
+        .divider { text-align: center; margin: 24px 0; position: relative; height: 16px; }
+        .divider::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold) 80%, transparent); }
+        .divider-ornament { display: inline-block; position: relative; z-index: 1; background: var(--parchment); padding: 0 12px; }
+        .divider-ornament svg { width: 14px; height: 14px; fill: var(--gold-bright); }
+        .divider.large { margin: 30px 0; height: 24px; }
+        .divider.large::before { height: 2px; background: linear-gradient(90deg, transparent, var(--gold-bright) 15%, var(--crimson-light) 50%, var(--gold-bright) 85%, transparent); }
+        .divider.large .divider-ornament svg { width: 22px; height: 22px; }
+
+        /* ===== CHARACTER ROSTER ===== */
+        .character-roster { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-bottom: 24px; }
+        .char-item { text-align: center; }
+        .char-frame { position: relative; margin: 0 auto; width: 90px; height: 90px; padding: 5px; background: linear-gradient(135deg, var(--gold-bright), var(--gold-dark), var(--gold-bright)); box-shadow: 0 3px 10px rgba(0,0,0,0.2); }
+        .char-frame::before { content: ''; position: absolute; inset: 3px; border: 1px solid var(--parchment-dark); pointer-events: none; z-index: 1; }
+        .char-frame img { width: 100%; height: 100%; object-fit: cover; display: block; border: 1px solid var(--ink-light); }
+        .char-frame::after { content: '\25C6'; position: absolute; top: -3px; left: 50%; transform: translateX(-50%); color: var(--gold-bright); font-size: 7px; z-index: 2; }
+        .char-name { font-family: 'Cinzel', serif; font-weight: 700; margin-top: 6px; font-size: 0.85em; color: var(--crimson); letter-spacing: 1px; }
+        .char-player { font-size: 0.72em; font-style: italic; color: var(--ink-light); opacity: 0.7; }
+
+        /* ===== SECTION HEADERS ===== */
+        h2 {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--crimson);
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-top: 28px;
+            margin-bottom: 12px;
+            padding-bottom: 5px;
+            position: relative;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+            letter-spacing: 1px;
+        }
+        h2::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--crimson-light), var(--gold), transparent); }
+        .chapter-num { font-family: 'Cinzel', serif; font-size: 0.5em; background: var(--crimson); color: var(--parchment); padding: 2px 7px; border-radius: 2px; letter-spacing: 1px; white-space: nowrap; }
+
+        /* ===== CONTENT ===== */
+        .content-section { margin-bottom: 12px; line-height: 1.65; font-size: 1.02em; text-align: justify; hyphens: auto; }
+        .content-section p { margin-bottom: 10px; text-indent: 1.5em; }
+        .content-section p:first-of-type { text-indent: 0; }
+
+        /* ===== DROP CAPS ===== */
+        .dropcap { float: left; font-family: 'Cinzel Decorative', serif; font-size: 3.4em; line-height: 0.75; padding-top: 5px; padding-right: 10px; color: var(--crimson); font-weight: 900; text-shadow: 1px 1px 0 var(--gold); }
+
+        /* ===== ENCOUNTER BOXES ===== */
+        .encounter-box { background: linear-gradient(135deg, rgba(94,11,11,0.04), rgba(94,11,11,0.08)); border-left: 4px solid var(--crimson-light); border-right: 1px solid rgba(94,11,11,0.1); padding: 12px 16px; margin: 14px 0; position: relative; }
+        .encounter-box::before { content: ''; position: absolute; top: 0; left: 0; bottom: 0; width: 4px; background: linear-gradient(180deg, var(--gold-bright), var(--crimson-light), var(--gold-bright)); }
+        .encounter-tag { font-family: 'Cinzel', serif; font-size: 0.62em; letter-spacing: 3px; text-transform: uppercase; color: var(--parchment); background: var(--crimson); padding: 2px 10px; display: inline-block; margin-bottom: 6px; font-weight: 700; }
+        .encounter-tag.exploration { background: var(--leather); }
+        .encounter-box p { margin-bottom: 4px; text-indent: 0; font-size: 0.9em; }
+        .encounter-box p:last-child { margin-bottom: 0; }
+
+        /* ===== QUOTE BOXES ===== */
+        .quote-box { background: rgba(196,169,110,0.1); border: 1px solid var(--gold); border-left: 4px solid var(--gold-bright); padding: 14px 18px 14px 16px; margin: 16px 0; font-style: italic; font-size: 0.98em; line-height: 1.55; position: relative; }
+        .quote-box::before { content: '\276D'; position: absolute; top: -2px; left: 6px; font-size: 2.4em; color: var(--gold); font-style: normal; line-height: 1; opacity: 0.5; }
+        .quote-box p { text-indent: 0; padding-left: 16px; }
+
+        /* ===== IMAGE BLOCKS ===== */
+        .image-block { margin: 20px 0; text-align: center; }
+        .image-frame { display: inline-block; position: relative; padding: 5px; background: linear-gradient(135deg, var(--gold-bright), var(--gold-dark)); box-shadow: 0 5px 20px rgba(0,0,0,0.25); }
+        .image-frame::before { content: ''; position: absolute; inset: 3px; border: 1px solid var(--parchment-dark); pointer-events: none; z-index: 1; }
+        .image-frame img { display: block; max-width: 100%; object-fit: contain; border: 1px solid var(--ink-light); }
+        .image-frame::after { content: '\25C6'; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); color: var(--gold-bright); font-size: 10px; z-index: 2; }
+        .caption { font-family: 'Cinzel', serif; font-size: 0.75em; color: var(--ink-light); margin-top: 8px; font-style: italic; letter-spacing: 1px; }
+        .caption strong { color: var(--crimson-light); }
+
+        /* ===== TAGS ===== */
+        .tag { display: inline-block; font-family: 'Cinzel', serif; font-size: 0.55em; letter-spacing: 2px; text-transform: uppercase; padding: 1px 6px; margin-right: 3px; border: 1px solid; }
+        .tag.combat { color: var(--crimson-light); border-color: var(--crimson-light); background: rgba(94,11,11,0.06); }
+        .tag.exploration-tag { color: var(--leather-light); border-color: var(--leather-light); background: rgba(28,18,8,0.04); }
+        .tag.social { color: var(--gold-dark); border-color: var(--gold-dark); background: rgba(196,169,110,0.1); }
+        .tags { margin: 5px 0; }
+
+        strong { color: var(--crimson-light); font-weight: 700; }
+        em { color: var(--ink-light); }
+
+        /* ===== FOOTER ===== */
+        .footer { text-align: center; margin-top: 40px; padding-top: 16px; position: relative; }
+        .footer::before { content: ''; position: absolute; top: 0; left: 15%; right: 15%; height: 2px; background: linear-gradient(90deg, transparent, var(--gold), var(--crimson-light), var(--gold), transparent); }
+        .footer-text { font-family: 'Cinzel Decorative', serif; font-size: 0.95em; color: var(--crimson); letter-spacing: 3px; text-transform: uppercase; }
+        .footer-sub { font-family: 'Cinzel', serif; font-size: 0.7em; color: var(--gold-dark); margin-top: 4px; letter-spacing: 2px; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 700px) {
+            body { padding: 10px; }
+            .container { padding: 30px 25px; }
+            h1 { font-size: 1.8em; letter-spacing: 2px; }
+            .character-roster { grid-template-columns: repeat(2, 1fr); }
+            .image-frame img { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+
+        <a href="../index.html" class="back-link">
+            <svg viewBox="0 0 100 100"><polygon points="70,10 30,50 70,90"/></svg>
+            Retour aux chapitres
+        </a>
+
+        <div class="header">
+            <div class="header-subtitle">Pathfinder Second Edition</div>
+            <h1>Les Chroniques de Castries ⚔</h1>
+            <div class="session-subtitle"><span class="session-num">Session I</span> — L'Escorte du 15 Mai 2026</div>
+        </div>
+
+        <div class="session-info">
+            <span><span class="label">Date</span> <span class="value">15 Mai 2026</span></span>
+            <span><span class="label">Durée</span> <span class="value">~5 heures</span></span>
+            <span><span class="label">Lieu</span> <span class="value">Absalom → Otari</span></span>
+            <span><span class="label">Niveau</span> <span class="value">1</span></span>
+        </div>
+
+        <div class="character-roster">
+            <div class="char-item">
+                <div class="char-frame"><img src="../Assets/Celeste.webp" alt="Celeste"></div>
+                <div class="char-name">Celeste</div><div class="char-player">Roxanne</div>
+            </div>
+            <div class="char-item">
+                <div class="char-frame"><img src="../Assets/GoBlock.webp" alt="Go Block"></div>
+                <div class="char-name">Go Block</div><div class="char-player">Elsa</div>
+            </div>
+            <div class="char-item">
+                <div class="char-frame"><img src="../Assets/Maxime_Hus.webp" alt="Maxime Hus"></div>
+                <div class="char-name">Maxime Hus</div><div class="char-player">Léa</div>
+            </div>
+            <div class="char-item">
+                <div class="char-frame"><img src="../Assets/Pipo_Petitpas.webp" alt="Pipo Petitpas"></div>
+                <div class="char-name">Pipo Petitpas</div><div class="char-player">Loïc</div>
+            </div>
+        </div>
+
+        <div class="divider large">
+            <span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 68,57 79,90 50,70 21,90 32,57 5,35 39,35"/></svg></span>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="chapter-num">Chap. I</span> L'Appel d'Absalom</h2>
+            <p><span class="dropcap">L</span>'aventure a pris racine dans la cité d'Absalom, la métropole au centre du monde. C'est là que nous avons fait la connaissance de <strong>Narala</strong>, une centaure majestueuse, coursière des <strong>Transports Gallentine</strong>. Cette compagnie, dirigée par <strong>Oloria Gallentine</strong> depuis Otari, assure le transport de courrier et de colis à travers la région. Narala avait été contrainte par son employeur d'engager une escorte pour ce trajet — une première pour elle, qui connaissait pourtant la route par cœur. La mission faisait suite à une requête urgente envoyée par <strong>Falbala</strong> depuis la bourgade d'<strong>Otari</strong>.</p>
+            <p>Attirés par la promesse d'une récompense généreuse, nous avons accepté le contrat et pris la route sous la conduite de Narala. Le chemin qui relie Absalom à Otari longe la côte sud de l'île de Kortos — bien balisé, fréquenté, et réputé sûr. Après près de trois jours de marche sans incident, nous n'étions plus qu'à quelques heures de notre destination. Mais la route nous réservait bien des surprises…</p>
+        </div>
+
+        <div class="divider">
+            <span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="chapter-num">Chap. II</span> L'Embuscade de la Route</h2>
+            <div class="tags">
+                <span class="tag combat">⚔ Combat</span>
+                <span class="tag social">💬 Social</span>
+            </div>
+        </div>
+
+        <div class="encounter-box">
+            <div class="encounter-tag">⚔ Rencontre</div>
+            <p><strong>Situation :</strong> Embuscade kobold sur un chariot marchand</p>
+            <p><strong>Adversaires :</strong> 4 Geckos des forêts (1 adulte + 3 jeunes) dressés par les kobolds</p>
+            <p><strong>Lieu :</strong> Route côtière, entre Absalom et Otari</p>
+            <p><strong>Note :</strong> Les kobolds ont déjà fui avec le butin — seuls les geckos restent sur place</p>
+        </div>
+
+        <div class="content-section">
+            <p><span class="dropcap">L</span>a route côtière semblait paisible, jusqu'à ce qu'un cri retentisse. Sur le chemin, un chariot avait basculé lourdement, coinçant son conducteur sous la structure de bois. Autour de l'épave, des <strong>geckos des forêts</strong> — de grands lézards aux pattes adhésives — montaient la garde, visiblement dressés pour combattre. Les kobolds qui les menaient venaient de s'enfuir dans les fourrés avec leur butin, laissant les bêtes en arrière-garde.</p>
+            <p><strong>Narala</strong> commenta la situation d'un ton grave : <em>« S'il y a du grabuge, c'est votre partie du boulot, pas la mienne. »</em> Puis, en reconnaissant les créatures : <em>« Des kobolds… évidemment. Ces vermines pullulent autour d'Otari. »</em></p>
+            <p>Nous avons engagé le combat contre les geckos. Dressés par les kobolds et conditionnés à combattre jusqu'à la mort, les bêtes ne cédèrent pas un pouce de terrain. Après un combat acharné, le dernier gecko tomba enfin. Sous le chariot gisait le marchand <strong>Yorge</strong>, un homme bavard et franchement pénible, mais manifestement dans un mauvais état. Nous l'avons libéré de son piège de fortune.</p>
+        </div>
+
+        <div class="image-block">
+            <div class="image-frame"><img src="../Assets/opening_scene_v2.png" alt="L'Attaque"></div>
+            <div class="caption"><strong>Chap. II</strong> — L'attaque du convoi de Yorge sur la route côtière</div>
+        </div>
+
+        <div class="divider">
+            <span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span>
+        </div>
+
+        <div class="content-section">
+            <p>En examinant les lieux, <strong>Yorge</strong> a constaté l'étendue du désastre. Les kobolds avaient emporté plusieurs de ses biens précieux : des tonneaux de vin, des outils de qualité… et surtout sa <strong>bourse contenant des documents commerciaux vitaux</strong>. Affolé, il répétait inlassablement : <em>« Oh non, oh non, oh non… »</em></p>
+            <p><strong>Narala</strong>, visiblement affectée — car elle connaissait personnellement Yorge — nous conseilla de soigner nos blessures avant de partir à la poursuite des kobolds. Elle proposa de rester avec le marchand pour le protéger et attendre notre retour. Yorge, reconnaissant, nous promit une <strong>récompense supplémentaire</strong> si nous récupérions ses biens, et nous confia un élixir de vie pour la route.</p>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="chapter-num">Chap. III</span> La Piste des Kobolds</h2>
+            <div class="tags"><span class="tag exploration-tag">🗺 Exploration</span></div>
+        </div>
+
+        <div class="encounter-box">
+            <div class="encounter-tag exploration">🗺 Exploration</div>
+            <p><strong>Épreuve :</strong> Survie & Perception — Traque des Kobolds</p>
+            <p><strong>Difficulté :</strong> Ardue — Indices dissimulés sous la végétation dense</p>
+            <p><strong>Durée estimée :</strong> ~2 heures de traque</p>
+        </div>
+
+        <div class="content-section">
+            <p><span class="dropcap">N</span>ous avons quitté Narala et Yorge sur la route et pris la direction du sud, suivant les indices laissés par les kobolds en fuite. La piste traversait la forêt dense — empreintes dans les zones boueuses, branches brisées, et marques de griffes sur les écorces. Malgré notre vigilance, les kobolds avaient eu une longueur d'avance considérable.</p>
+        </div>
+
+        <div class="quote-box">
+            <p>Deux heures de traque silencieuse dans l'humidité étouffante du littoral…</p>
+        </div>
+
+        <div class="content-section">
+            <p>Il nous a fallu deux longues heures d'observation minutieuse, traversant la forêt puis débouchant sur une <strong>plage ensablée</strong> au bord de la mer. Là, les traces devenaient plus claires : cinq kobolds au total, dont deux portaient une charge lourde — sans doute la malle aux outils de Yorge — et deux autres transportaient les tonneaux de vin. La piste menait inexorablement vers des <strong>falaises</strong> qui s'élevaient face à l'océan.</p>
+        </div>
+
+        <div class="image-block">
+            <div class="image-frame"><img src="../Assets/searching_scene_v2.png" alt="Recherche"></div>
+            <div class="caption"><strong>Chap. III</strong> — Recherche des traces à travers la végétation dense</div>
+        </div>
+
+        <div class="divider">
+            <span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="chapter-num">Chap. IV</span> Le Passage Piégé</h2>
+            <div class="tags">
+                <span class="tag combat">⚔ Combat</span>
+                <span class="tag exploration-tag">🗺 Piège</span>
+            </div>
+        </div>
+
+        <div class="encounter-box">
+            <div class="encounter-tag">⚔ Rencontre</div>
+            <p><strong>Adversaires :</strong> 2 Crabes géants modifiés (carapaces épaisses)</p>
+            <p><strong>Lieu :</strong> Le Passage Étroit — Tunnel côtier dans les falaises</p>
+            <p><strong>Découverte :</strong> Piège à coquillage explosif — <strong>Pipo</strong> l'évite de justesse</p>
+            <p><strong>Note :</strong> Un kobold mort retrouvé dans le passage, victime de son propre piège</p>
+        </div>
+
+        <div class="content-section">
+            <p><span class="dropcap">L</span>e danger s'est révélé dans un tunnel étroit ouvert sur le ciel, creusé dans la falaise — le <strong>Passage Étroit</strong>. À l'entrée du boyau, <strong>Pipo Petitpas</strong> a déclenché par mégarde le premier piège : un coquillage explosif habilement dissimulé. Par un prodige d'agilité, il a réalisé une cabriole salvatrice au-dessus du mécanisme, évitant de justesse d'être mutilé.</p>
+            <p>Plus loin dans le passage, nous avons découvert le corps sans vie d'un <strong>kobold</strong>, visiblement victime de son propre système de défense. Puis, au cœur du tunnel, des <strong>crabes géants modifiés</strong> aux carapaces épaisses ont surgi du sable. Le combat fut brutal. <strong>Go Block</strong> s'est ruée la première, mais subissant une série de chocs violents, elle s'est effondrée. C'est alors que <strong>Pipo Petitpas</strong> prit de la hauteur et planta son arme dans le crabe avec une précision mortelle, renversant le cours du combat. Une fois la menace éliminée, <strong>Celeste</strong> s'occupa de soigner Go Block et la stabilisa grâce à ses soins.</p>
+        </div>
+
+        <div class="image-block">
+            <div class="image-frame"><img src="../Assets/crab_encounter_v4.png" alt="Combat"></div>
+            <div class="caption"><strong>Chap. IV</strong> — Le combat désespéré contre les crabes géants</div>
+        </div>
+
+        <div class="divider">
+            <span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="chapter-num">Chap. V</span> La Falaise</h2>
+            <div class="tags"><span class="tag exploration-tag">🗺 Exploration</span></div>
+            <p><span class="dropcap">A</span>près avoir repris nos esprits et soigné nos blessures, nous avons suivi la piste qui grimpait le long de la falaise. L'air marin était chargé d'une odeur familière — celle du <strong>vin de Yorge</strong>, qui trahissait la présence des kobolds avant même que nous ne les apercevions. Au sommet de la falaise, face à l'océan, s'élevaient les entrées d'un réseau de grottes enfouies dans la roche : le <strong>repaire des Écailles Rouges</strong>. La progression est devenue furtive, chaque craquement de pierre pouvant désormais nous trahir.</p>
+        </div>
+
+        <div class="content-section">
+            <h2><span class="chapter-num">Chap. VI</span> L'Embuscade du Vin Volé</h2>
+            <div class="tags">
+                <span class="tag combat">⚔ Combat</span>
+                <span class="tag social">💬 Interrogatoire</span>
+            </div>
+        </div>
+
+        <div class="encounter-box">
+            <div class="encounter-tag">⚔ Rencontre</div>
+            <p><strong>Adversaires :</strong> 4 Brigands kobolds Écailles Rouges (enivrés)</p>
+            <p><strong>Lieu :</strong> Sommet de la falaise, entrée du repaire</p>
+            <p><strong>Tactique :</strong> Diversion — Celeste joue la voyageuse égarée</p>
+            <p><strong>Résultat :</strong> 3 kobolds abattus, 1 capturé et interrogé</p>
+        </div>
+
+        <div class="content-section">
+            <p><span class="dropcap">L</span>a diversion fut parfaite. <strong>Celeste</strong> s'est avancée seule vers l'entrée du repaire, jouant la voyageuse égarée. Les quatre brigands kobolds, installés près des grottes et passablement enivrés par le vin volé à Yorge, ont commencé à la harceler. C'est à cet instant que le reste du groupe a surgi de l'ombre. Trois des créatures ont été abattues net avant même d'avoir pu réagir.</p>
+        </div>
+
+        <div class="image-block">
+            <div class="image-frame"><img src="../Assets/kobold_ambush_v2.png" alt="Embuscade"></div>
+            <div class="caption"><strong>Chap. VI</strong> — L'embuscade finale et l'interrogatoire du survivant</div>
+        </div>
+
+        <div class="divider">
+            <span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,10 90,50 50,90 10,50"/></svg></span>
+        </div>
+
+        <div class="content-section">
+            <p>Le dernier survivant fut capturé par <strong>Go Block</strong>, qui le plaqua dans un chokehold implacable. Terrorisé et à bout de souffle, le kobold s'est mis à table. Il a révélé que la tribu des Écailles Rouges était dirigée par un <strong>nouveau chef tyrannique</strong>, qui avait assassiné l'ancienne leader — une kobolde aux écailles dorées nommée <strong>Uskri</strong>, qui était aussi alchimiste. Il nous a décrit en détail les pouvoirs terrifiants du nouveau meneur, et a confirmé détenir la <strong>bourse de Yorge</strong> contenant ses documents commerciaux importants, ainsi que les outils volés. En échange de sa vie, il a accepté de nous guider vers <strong>l'entrée secrète</strong> du repaire, un tunnel caché derrière un buisson dans la falaise.</p>
+        </div>
+
+        <div class="quote-box">
+            <p>Notre session s'achève ici, devant cette entrée sombre nichée dans la falaise. Nous avons établi notre campement, nous préparant à infiltrer la tanière dès l'aube — pour récupérer les biens de Yorge, et peut-être libérer les kobolds opprimés par leur nouveau chef.</p>
+        </div>
+
+        <div class="divider large">
+            <span class="divider-ornament"><svg viewBox="0 0 100 100"><polygon points="50,5 61,35 95,35 68,57 79,90 50,70 21,90 32,57 5,35 39,35"/></svg></span>
+        </div>
+
+        <div class="footer">
+            <div class="footer-text">Fin de la Chronique du Premier Jour</div>
+            <div class="footer-sub">La suite au prochain épisode…</div>
+        </div>
+    </div>
+</body>
+</html>

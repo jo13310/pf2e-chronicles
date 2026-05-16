@@ -1,0 +1,131 @@
+/* ===== Les Chroniques de Castries — Shared CSS ===== */
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;700;900&family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400;1,600&display=swap');
+
+:root {
+    --parchment: #f4e8c1;
+    --parchment-dark: #e0d0a8;
+    --ink: #2b1810;
+    --ink-light: #4a3525;
+    --crimson: #5e0b0b;
+    --crimson-light: #8b1a1a;
+    --gold: #c4a96e;
+    --gold-bright: #d4af37;
+    --gold-dark: #9a7d3e;
+    --leather: #1c1208;
+    --leather-light: #3a2a18;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    background-color: #1a1a1a;
+    background-image: url('https://www.transparenttextures.com/patterns/black-linen.png');
+    color: var(--ink);
+    font-family: 'Crimson Text', serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.container {
+    max-width: 900px;
+    width: 100%;
+    background-color: var(--parchment);
+    background-image:
+        radial-gradient(ellipse at 20% 50%, rgba(196,169,110,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(196,169,110,0.06) 0%, transparent 50%);
+    padding: 50px 60px;
+    box-shadow: 0 0 60px rgba(0,0,0,0.7);
+    position: relative;
+}
+
+/* Gold borders */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 10px; right: 10px; bottom: 10px; left: 10px;
+    border: 2px solid var(--gold);
+    pointer-events: none;
+    z-index: 10;
+}
+.container::after {
+    content: '';
+    position: absolute;
+    top: 16px; right: 16px; bottom: 16px; left: 16px;
+    border: 1px solid var(--gold-dark);
+    pointer-events: none;
+    z-index: 10;
+}
+
+/* Corner accents */
+.corner { position: absolute; width: 24px; height: 24px; z-index: 11; pointer-events: none; }
+.corner::before, .corner::after { content: ''; position: absolute; background: var(--gold-bright); }
+.corner.tl { top: 6px; left: 6px; }
+.corner.tr { top: 6px; right: 6px; }
+.corner.bl { bottom: 6px; left: 6px; }
+.corner.br { bottom: 6px; right: 6px; }
+.corner.tl::before, .corner.bl::before { width: 18px; height: 2px; left: 0; }
+.corner.tl::after, .corner.bl::after { width: 2px; height: 18px; left: 0; }
+.corner.tr::before, .corner.br::before { width: 18px; height: 2px; right: 0; }
+.corner.tr::after, .corner.br::after { width: 2px; height: 18px; right: 0; }
+.corner.tl::before { top: 0; } .corner.tl::after { top: 0; }
+.corner.tr::before { top: 0; } .corner.tr::after { top: 0; }
+.corner.bl::before { bottom: 0; } .corner.bl::after { bottom: 0; }
+.corner.br::before { bottom: 0; } .corner.br::after { bottom: 0; }
+
+/* ===== BACK LINK ===== */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.8em;
+    color: var(--gold-dark);
+    text-decoration: none;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    transition: color 0.2s;
+}
+.back-link:hover { color: var(--crimson-light); }
+.back-link svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* ===== DIVIDER ===== */
+.divider { text-align: center; margin: 20px 0; position: relative; height: 16px; }
+.divider::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold) 20%, var(--gold) 80%, transparent); }
+.divider-ornament { display: inline-block; position: relative; z-index: 1; background: var(--parchment); padding: 0 12px; }
+.divider-ornament svg { width: 16px; height: 16px; fill: var(--gold-bright); }
+.divider.large { margin: 30px 0; height: 22px; }
+.divider.large::before { height: 2px; background: linear-gradient(90deg, transparent, var(--gold-bright) 15%, var(--crimson-light) 50%, var(--gold-bright) 85%, transparent); }
+.divider.large .divider-ornament svg { width: 22px; height: 22px; }
+
+/* ===== FOOTER ===== */
+.footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 15px;
+    position: relative;
+}
+.footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 15%; right: 15%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), var(--crimson-light), var(--gold), transparent);
+}
+.footer-text {
+    font-family: 'Cinzel', serif;
+    font-size: 0.75em;
+    color: var(--gold-dark);
+    letter-spacing: 2px;
+}
+
+/* ===== TYPOGRAPHY ===== */
+strong { color: var(--crimson-light); font-weight: 700; }
+em { color: var(--ink-light); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 700px) {
+    body { padding: 10px; }
+    .container { padding: 30px 25px; }
+}
